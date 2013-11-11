@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Dom Working Module</title>
+    <style>
+        #wrapper {
+            width: 600px;
+            padding: 20px;
+            background-color: lightgray;
+        }
+
+        span, strong, a, p {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper"><strong>Div element, you can click at.</strong></div>
+    <script>
+        // document-fragments buffer collection:
+        var fragmentsBuffer = {};
+
+        var domModule = (function domModule() {
+            function getElement(givenSelector) {
+                return document.querySelector(givenSelector);
+            }
+
+            function getElements(givenSelector) {
+                return document.querySelectorAll(givenSelector);
+            }
+
+            function addChildElement(childElement, parentSelector) {
+                var parentElement = getElement(parentSelector);
+                parentElement.appendChild(childElement);
+            }
+
+            function removeChildOrChildren(parentSelector, childSelector) {
+                var elementsToRemove = getElements(parentSelector + " " + childSelector);
+
+                for (var i = 0; i < elementsToRemove.length; i++) {
+                    elementsToRemove[i].parentNode.removeChild(elementsToRemove[i]);
+                }
+            }
+
+            function addEventHandler(givenSelector, eventType, eventHandler) {
+                var element = getElement(givenSelector);
+                if (element.addEventListener) {
+                    element.addEventListener(eventType, eventHandler, false);
+                } else {
+                    element.attachEvent("on" + eventType, eventHandler);
+                }
+            }
+
+            function addElementsToBuffer(parentSelector, elementTagName, numberOfElementsToAdd) {
+                var numberOfElements = numberOfElementsToAdd || 1;
+                var MAX_FRAGMENT_SIZE = 100; // constant, maximum size of one document-fragment in the buffer
+
+                if (!fragmentsBuffer[parentSelector]) {
+                    // add new fragment for the new selector
+                    fragmentsBuffer[parentSelector] = document.createDocumentFragment();
+                }
+
+                for (var i = 1; i <= numberOfElements; i++) {
+                    var newElement = document.createElement(elementTagName);
+                    newElement.innerHTML = elementTagName + ' ' + i;
+                    fragmentsBuffer[parentSelector].appendChild(newElement);
+
+                    if (fragmentsBuffer[parentSelector].childNodes.length === MAX_FRAGMENT_SIZE) {
+                        // the fragment has reached its maximum size => append to DOM and create new buffer
+                        var parent = getElement(parentSelector);
+                        parent.appendChild(fragmentsBuffer[parentSelector]);
+                        fragmentsBuffer[parentSelector] = document.createDocumentFragment();
+                    }
+                }
+            }
+
+            return {
+                getElement: getElement,
+                getElements: getElements,
+                addChildElement: addChildElement,
+                removeChildOrChildren: removeChildOrChildren,
+                addEventHandler: addEventHandler,
+                addElementsToBuffer: addElementsToBuffer
+            };
+        })();
+
+        // Testing the domModel
+        var generate5Spans = function generate5Spans() {
+            for (var i = 1; i <= 5; i++) {
+                var spanElement = document.createElement("span");
+                spanElement.innerHTML = 'Span ' + i;
+                domModule.addChildElement(spanElement, "#wrapper");
+            }
+        }
+        generate5Spans();
+
+        // removing first span child by CSS selector (in parent with id wrapper)
+        domModule.removeChildOrChildren('#wrapper', 'span:first-child');
+
+        // removing all span children by tag-name selector
+        domModule.removeChildOrChildren('#wrapper', 'span');
+
+        //generate5Spans();
+
+        domModule.addEventHandler('#wrapper', 'click', function () {
+            alert("Clicked");
+        });
+
+        domModule.addElementsToBuffer('#wrapper', 'div');
+
+        domModule.addElementsToBuffer('#wrapper', 'span', 30);
+        domModule.addElementsToBuffer('#wrapper', 'strong', 30);
+        domModule.addElementsToBuffer('#wrapper', 'a', 30);
+        domModule.addElementsToBuffer('#wrapper', 'p', 30);
+        // this will add 100 elements to DOM in parent div #wrapper,
+        // and keep 20 p elements left inside the buffer.
+        // if you want to add them as well, just add 80 more elements:
+        // domModule.addElementsToBuffer('#wrapper', 'div', 80);
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DOM Manipulation", "http://localhost:51609", "{9F64C38A-9AF0-4023-AB52-6A8B8134F524}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "true"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_51609"
+		Debug.AspNetCompiler.PhysicalPath = "..\DOM Manipulation\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51609\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_51609"
+		Release.AspNetCompiler.PhysicalPath = "..\DOM Manipulation\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51609\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "..\DOM Manipulation\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F64C38A-9AF0-4023-AB52-6A8B8134F524}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F64C38A-9AF0-4023-AB52-6A8B8134F524}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

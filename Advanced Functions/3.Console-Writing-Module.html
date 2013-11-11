@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Console Writing Module</title>
+</head>
+<body>
+    <script>
+        var specialConsole = (function () {
+            (function setConsoleWindow() {
+                var consoleWindow = document.createElement('div');
+                consoleWindow.id = 'specialConsole';
+                consoleWindow.style.backgroundColor = '#000';
+                consoleWindow.style.color = '#fff';
+                consoleWindow.style.border = '5px solid #888';
+                consoleWindow.style.padding = '20px';
+
+                document.body.appendChild(consoleWindow);
+            })();
+
+            var userConsole = document.getElementById('specialConsole');
+
+            function formatMessage(arguments) {
+                var mainMessage = arguments[0];
+                for (var i = 1, length = arguments.length; i < length; i++) {
+                    var placeHolder = '{' + (i - 1) + '}';
+                    mainMessage = mainMessage.replace(placeHolder, arguments[i]);
+                }
+
+                return mainMessage.toString();
+            }
+
+            function writeLine(mainMessage, placeHolders) {
+                var mainMessage = formatMessage(arguments);
+                console.log(mainMessage);
+                var paragraph = document.createElement('p');
+                var text = document.createTextNode(mainMessage);
+
+                paragraph.appendChild(text);
+                paragraph.style.color = '#fff';
+                userConsole.appendChild(paragraph);
+            }
+
+            function writeWarning(warnMessage, placeHolders) {
+                var warnMessage = formatMessage(arguments);
+                console.log('[Warning!] ' + warnMessage);
+                var paragraph = document.createElement('p');
+                var text = document.createTextNode(warnMessage);
+
+                paragraph.appendChild(text);
+                paragraph.style.color = '#ff0';
+                paragraph.style.fontWeight = 'bold';
+                userConsole.appendChild(paragraph);
+            }
+
+            function writeError(errorMessage, placeHolders) {
+                var errorMessage = formatMessage(arguments);
+                console.log('[Error!] ' + errorMessage);
+                var paragraph = document.createElement('p');
+                var text = document.createTextNode(errorMessage);
+
+                paragraph.appendChild(text);
+                paragraph.style.color = '#f00';
+                paragraph.style.fontWeight = 'bold';
+                userConsole.appendChild(paragraph);
+            }
+
+            return {
+                writeLine: writeLine,
+                writeWarning: writeWarning,
+                writeError: writeError
+            };
+        })();
+
+        var jsAbbreviation = 'JS';
+        specialConsole.writeLine('Hello, {0} special console!', jsAbbreviation);
+        specialConsole.writeWarning('This is a {0} Warning message!', jsAbbreviation);
+        specialConsole.writeError('{0} Error message!', jsAbbreviation);
+    </script>
+</body>
+</html>

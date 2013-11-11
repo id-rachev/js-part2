@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Tag Cloud</title>
+    <!-- Create a tag cloud:
+    Visualize a string of tags (strings) in a given container
+    By given minFontSize and maxFontSize, generate the tags with 
+    different font-size, depending on the number of occurrences. -->
+
+    <style>
+        #wrap {
+            width: 200px;
+            padding: 10px;
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap"></div>
+    <script>
+        var tags = ["cms", "javascript", "js", "ASP.NET MVC", ".net", ".net", "css", "wordpress",
+            "xaml", "js", "http", "web", "asp.net", "asp.net MVC", "ASP.NET MVC", "wp", "js",
+            "javascript", "js", "cms", "html", "javascript", "http", "http", "CMS", "JS"];
+
+        var wrapper = document.getElementById('wrap');
+
+        function generateTagCloud(tags, minFontSize, maxFontSize) {
+            var tagsAppearances = [];
+
+            for (var i = 0; i < tags.length; i++) {
+                var appearCount = 1;
+
+                for (var j = i + 1; j < tags.length; j++) {
+                    if (tags[i].toLowerCase() == tags[j].toLowerCase()) {
+                        appearCount++;
+                        tags.splice(j, 1);
+                        j--;
+                    }
+                }
+
+                tagsAppearances.push(appearCount);
+            }
+
+            for (var i = 0; i < tags.length; i++) {
+                var result = document.createElement('span');
+                result.style.fontSize = tagsAppearances[i] <= 0 ? minFontSize :
+                    (tagsAppearances[i] >= maxFontSize ? maxFontSize :
+                    minFontSize + tagsAppearances[i] * 2) + 'px';
+                result.appendChild(document.createTextNode(tags[i] + ' '));
+                wrapper.appendChild(result);
+            }
+
+            return false;
+        }
+
+        generateTagCloud(tags, 17, 42);
+
+    </script>
+</body>
+</html>

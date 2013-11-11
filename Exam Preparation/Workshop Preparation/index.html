@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="script.js"></script>
+</head>
+<body>
+    <div id="accordion-holder"></div>
+
+    <script type="text/javascript">
+        var accordion = controls.getAccordion("#accordion-holder");
+        var webItem = accordion.add("Web");
+        var htmlItem = webItem.add("HTML");
+        htmlItem.add("nested item 1");
+        htmlItem.add("nested item 2");
+
+        var mobileItem = accordion.add("Mobile");
+        mobileItem.add("Android");
+        mobileItem.add("IOS");
+        mobileItem.add("Windows Phone");
+
+        accordion.add("Desktop");
+        accordion.render();
+
+        accordion.add("Gosho");
+        accordion.render();
+
+        var serialized = accordion.serialize();
+        localStorage.setObject("acc", serialized);
+
+        var data = localStorage.getObject("acc");
+        controls.buildAccordion(data);
+    </script>
+</body>
+</html>

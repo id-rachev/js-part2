@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="styles.css" rel="stylesheet" />
+    <script src="script.js"></script>
+</head>
+<body>
+    <div id="grid-holder"></div>
+
+    <script type="text/javascript">
+        // Task 1:
+        var schoolGrid = controls.getGridView("#grid-holder");
+        schoolGrid.addRow("PMG", "Burgas", 400, "Math");
+        schoolGrid.addRow("TUES", "Sofia", 500, "IT");
+        schoolGrid.addHeader("Name", "Location", "Total Students", "Specialty");
+
+        // Task 2:
+        var academyRow = schoolGrid.addRow("Telerik Academy", "Sofia", 5000, "IT");
+        var academyGrid = academyRow.getNestedGridView();
+        academyGrid.addRow("JS 2", "11-april-2013", "400");
+        academyGrid.addRow("SEO", "15-may-2013", "1300");
+        academyGrid.addRow("Slice and Dice", "05-april-2013", "500");
+        academyGrid.addHeader("Title", "Start Date", "Total Students");
+
+        schoolGrid.render();
+        schoolGrid.render();
+
+        // Task 3: gridHolder.addEventListener() (must click on the last cell of row) :)
+    </script>
+</body>
+</html>

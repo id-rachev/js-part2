@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Canvas Drawing</title>
+</head>
+<body>
+    <canvas id ="canvas"></canvas>
+    <script>
+        var canvas = document.createElement('canvas');
+        canvas.width = 1200;
+        canvas.height = 800;
+        document.body.appendChild(canvas);
+
+        (function () {
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#333';
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+            ctx.lineWidth = 3;
+
+            function addEllipsePath(context, xCoord, yCoord, radius1, radius2, startAngle, endAngle) {
+                context.save();
+                context.translate(xCoord, yCoord);
+                context.scale(radius1, radius2);
+                context.arc(0, 0, 1, startAngle, endAngle, 0);
+                context.restore();
+            }
+
+            // Drawing the house.
+            ctx.fillStyle = '#6d3535';
+            ctx.fillRect(600, 350, 360, 280);
+            ctx.strokeStyle = '#000';
+            ctx.strokeRect(600, 350, 360, 280);
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(625, 385, 130, 85);
+            ctx.fillRect(805, 385, 130, 85);
+            ctx.fillRect(805, 500, 130, 85);
+
+            // windows
+            ctx.beginPath();
+            ctx.strokeStyle = '#6d3535';
+            ctx.moveTo(625, 428);
+            ctx.lineTo(935, 428);
+            ctx.moveTo(870, 385);
+            ctx.lineTo(870, 585);
+            ctx.moveTo(805, 543);
+            ctx.lineTo(935, 543);
+            ctx.moveTo(690, 385);
+            ctx.lineTo(690, 470);
+            ctx.stroke();
+
+            // door
+            ctx.beginPath();
+            ctx.strokeStyle = '#000';
+            ctx.moveTo(690, 500);
+            ctx.lineTo(690, 630);
+            ctx.moveTo(640, 630);
+            ctx.lineTo(640, 530);
+            addEllipsePath(ctx, 690, 530, 50, 30, Math.PI, 0);
+            ctx.lineTo(740, 630);
+            ctx.stroke();
+
+            ctx.moveTo(680, 585);
+            ctx.arc(675, 585, 5, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.moveTo(710, 585);
+            ctx.arc(705, 585, 5, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // roof
+            ctx.beginPath();
+            ctx.moveTo(600, 350);
+            ctx.lineTo(780, 150);
+            ctx.lineTo(960, 350);
+            ctx.lineTo(600, 350);
+            ctx.fillStyle = '#6d3535';
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(895, 305);
+            ctx.lineTo(895, 200);
+            addEllipsePath(ctx, 875, 200, 20, 5, 2 * Math.PI, 0);
+            addEllipsePath(ctx, 875, 200, 20, 5, 2 * Math.PI, Math.PI);
+            ctx.lineTo(855, 305);
+            ctx.lineTo(895, 305);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#6d3535';
+            ctx.fillRect(850, 300, 50, 10);
+
+            // Drawing the bicycle.
+            ctx.beginPath();
+            ctx.strokeStyle = '#3a8ea3';
+            ctx.fillStyle = '#90cad7';
+            ctx.moveTo(245, 650);
+            ctx.arc(200, 650, 45, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+            ctx.moveTo(430, 650);
+            ctx.arc(385, 650, 45, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.moveTo(265, 625);
+            ctx.lineTo(315, 675);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(305, 650);
+            ctx.arc(290, 650, 15, 0, 2 * Math.PI);
+            ctx.fillStyle = '#333';
+            ctx.fill();
+            
+            ctx.moveTo(200, 650);
+            ctx.lineTo(290, 650);
+            ctx.lineTo(370, 595);
+            ctx.lineTo(260, 595);
+            ctx.lineTo(200, 650);
+            ctx.moveTo(290, 650);
+            ctx.lineTo(250, 575);
+            ctx.moveTo(230, 575);
+            ctx.lineTo(270, 575);
+            ctx.moveTo(385, 650);
+            ctx.lineTo(367, 565);
+            ctx.lineTo(400, 535);
+            ctx.moveTo(367, 565);
+            ctx.lineTo(330, 580);
+            ctx.stroke();
+
+            // Drawing the face.
+            ctx.beginPath();
+            ctx.fillStyle = '#90cad7';
+            ctx.strokeStyle = '#184a55';
+            addEllipsePath(ctx, 300, 500, 40, 30, 2 * Math.PI, 0);
+            ctx.fill();
+            ctx.moveTo(307, 495);
+            addEllipsePath(ctx, 300, 495, 7, 5, 2 * Math.PI, 0);
+            ctx.moveTo(302, 495);
+            addEllipsePath(ctx, 302, 495, 1, 2, 2 * Math.PI, 0);
+            ctx.moveTo(327, 492);
+            addEllipsePath(ctx, 320, 492, 7, 5, 2 * Math.PI, 0);
+            ctx.moveTo(322, 492);
+            addEllipsePath(ctx, 322, 492, 1, 2, 2 * Math.PI, 0);
+            ctx.moveTo(312, 498);
+            ctx.lineTo(318, 503);
+            ctx.lineTo(312, 505);
+            ctx.rotate(-0.40); // rotate canvas for the mouth
+            ctx.moveTo(106, 595);
+            addEllipsePath(ctx, 92, 597, 15, 5, 0, 2 * Math.PI);
+            ctx.rotate(0.40); // restor canvas rotate
+            ctx.stroke();
+
+            // Drawing the hat.
+            ctx.beginPath();
+            ctx.fillStyle = '#396693';
+            ctx.strokeStyle = '#24201b';
+            ctx.moveTo(350, 470);
+            addEllipsePath(ctx, 300, 470, 50, 10, 2 * Math.PI, 0);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(320, 460);
+            ctx.lineTo(320, 430);
+            addEllipsePath(ctx, 300, 430, 20, 5, 2 * Math.PI, 0);
+            addEllipsePath(ctx, 300, 430, 20, 5, 2 * Math.PI, Math.PI);
+            ctx.lineTo(280, 460);
+            ctx.moveTo(320, 460);
+            addEllipsePath(ctx, 300, 460, 20, 10, 2 * Math.PI, Math.PI);
+            ctx.fill();
+            ctx.stroke();
+            
+        })();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+﻿body {
+}
+
+#grid-holder table {
+    border-collapse: collapse;
+    border: 1px solid #000;
+    color: #000;
+}
+
+#grid-holder tr td,
+#grid-holder tr th {
+    padding: 5px 15px;
+    border: 1px solid #000;
+}
+
+#grid-holder tr th {
+    background-color: #aaa;
+}

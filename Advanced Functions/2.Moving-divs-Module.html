@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Moving divs Model</title>
+    <style>
+        #wrapper {
+            width: 810px;
+            height: 520px;
+            background-color: lightgray;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="divMovingModule.addInRectangle()">add div to move in rectangle</button>
+    <button onclick="divMovingModule.addInCircle()">add div to move in circle</button>
+    <div id="wrapper"></div>
+    <script>
+        var divMovingModule = (function divMovingModule() {
+
+            function addInRectangle() {
+                var divElement = createDivElement();
+                var parentWrapper = document.getElementById('wrapper');
+                parentWrapper.appendChild(divElement);
+
+                moveInRectangle(divElement);
+            }
+
+            function addInCircle() {
+                var divElement = createDivElement();
+                var parentWrapper = document.getElementById('wrapper');
+                parentWrapper.appendChild(divElement);
+
+                moveInCircle(divElement);
+            }
+
+            function createDivElement() {
+                var divElement = document.createElement("div");
+                divElement.style.width = "80px";
+                divElement.style.height = "80px";
+                divElement.style.border = "10px solid " + generateRandomColor();
+                divElement.style.backgroundColor = generateRandomColor();
+                divElement.style.color = generateRandomColor();
+                divElement.style.fontSize = "30px";
+                divElement.style.position = "absolute";
+                divElement.innerText = "div";
+                divElement.style.textAlign = "center";
+                divElement.style.lineHeight = "80px";
+                divElement.style.borderRadius = "20px";
+
+                function generateRandomColor() {
+                    var red = (Math.random() * 256) | 0;
+                    var green = (Math.random() * 256) | 0;
+                    var blue = (Math.random() * 256) | 0;
+
+                    return "rgb(" + red + "," + green + "," + blue + ")";
+                }
+
+                return divElement ;
+            }
+
+            function moveInRectangle(element) {
+                var topPosition = 20;
+                var leftPosition = 20;
+                setInterval(function () {
+                    if (topPosition < 400 && leftPosition == 20) {
+                        topPosition++;
+                    }
+                    else if (leftPosition < 300 && topPosition == 400) {
+                        leftPosition++;
+                    }
+                    else if (topPosition > 20 && leftPosition == 300) {
+                        topPosition--;
+                    }
+                    else if (leftPosition > 20 && topPosition == 20) {
+                        leftPosition--;
+                    }
+
+                    element.style.top = topPosition + "px";
+                    element.style.left = leftPosition + "px";
+                }, 3);
+            }
+
+            function moveInCircle(element) {
+                var centerPositionTop = 210;
+                var centerPositionLeft = 500;
+                var circleRadius = 200;
+                element.setAttribute("angle", "270");
+                element.style.top = "10px";
+                element.style.left = "500px";
+
+
+                setInterval(function () {
+                    var angleInRadians = (element.getAttribute("angle")) * (Math.PI / 180);
+                    var topPosition = circleRadius * Math.sin(angleInRadians) + centerPositionTop;
+                    var leftPosition = circleRadius * Math.cos(angleInRadians) + centerPositionLeft;
+                    element.style.top = topPosition + "px";
+                    element.style.left = leftPosition + "px";
+                    element.attributes.angle.nodeValue++;
+                }, 10);
+            }
+
+            return {
+                addInRectangle: addInRectangle,
+                addInCircle: addInCircle
+            }
+        })();
+    </script>
+</body>
+</html>

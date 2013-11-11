@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Vehicle Hierarchy</title>
+</head>
+<body>
+    <div><strong>Tests are in the browser console (tested in chrome)!</strong></div>
+    <script>
+        var vehiclesNS = (function () {
+            Function.prototype.inherit = function (parent) {
+                this.prototype = new parent();
+                this.prototype.constructor = parent;
+            }
+
+            function PropulsionUnit() {
+                // some kind of abstract class
+                this.acceleration = function () {
+                    throw new Error("Override this function from inherited classes.");
+                }
+            }
+
+            function Wheel(radius) {
+                PropulsionUnit.apply(this, arguments);
+                this.radius = radius;
+
+                this.acceleration = function () {
+                    return (2 * Math.PI * radius) | 0;
+                }
+            }
+            Wheel.inherit(PropulsionUnit);
+
+            function PropellingNozzle(power, isAfterburnerOn) {
+                PropulsionUnit.apply(this, arguments);
+                this.power = power;
+                this.isAfterburnerOn = isAfterburnerOn;
+
+                this.acceleration = function () {
+                    var accelerate = 1;
+                    if (this.isAfterburnerOn === true) {
+                        accelerate++;
+                    }
+
+                    return accelerate * power;
+                }
+            }
+            PropellingNozzle.inherit(PropulsionUnit);
+
+            function Propeller(finsNumber, isClockwiseSpin) {
+                PropulsionUnit.apply(this, arguments);
+                this.finsNumber = finsNumber;
+                this.isClockwiseSpin = isClockwiseSpin;
+
+                this.acceleration = function () {
+                    var direction = 1;
+                    if (this.isClockwiseSpin !== true) {
+                        direction = -1;
+                    }
+
+                    return this.finsNumber * direction;
+                }
+            }
+            Propeller.inherit(PropulsionUnit);
+
+            function Vehicle(speed, propulsionUnits) {
+                this.speed = speed;
+                this.propulsionUnits = propulsionUnits;
+
+                this.accelerate = function () {
+                    for (var i = 0, length = propulsionUnits.length; i < length; i++) {
+                        this.speed += propulsionUnits[i].acceleration();
+                    }
+                }
+            }
+
+            function LandVehicle(speed, wheels) {
+                Vehicle.call(this, speed, wheels)
+                if (wheels.length != 4) {
+                    throw new Error("The wheels array must contain exactly 4 wheels!");
+                }
+                for (var i = 0; i < 4; i++) {
+                    if (!(wheels[i] instanceof Wheel)) {
+                        throw new Error("All propulsion units must be instance of Wheels!");
+                    }
+                }
+            }
+            LandVehicle.inherit(Vehicle);
+
+            function AirCraft(speed, propellingNozzle) {
+                Vehicle.call(this, speed, propellingNozzle);
+                if (propellingNozzle.length != 1) {
+                    throw new Error("The propellingNozzle array must contain exactly one nozzle!");
+                }
+                if (!(propellingNozzle[0] instanceof PropellingNozzle)) {
+                    throw new Error("This propulsion unit must be instance of PropellingNozzle!");
+                }
+
+                this.switchAfterburner = function () {
+                    if (this.propulsionUnits[0].isAfterburnerOn === true) {
+                        this.propulsionUnits[0].isAfterburnerOn = false;
+                    }
+                    else {
+                        this.propulsionUnits[0].isAfterburnerOn = true;
+                    }
+                }
+            }
+            AirCraft.inherit(Vehicle);
+
+            function WaterCraft(speed, propellers) {
+                Vehicle.call(this, speed, propellers);
+                for (var i = 0; i < propellers.length; i++) {
+                    if (!(propellers[i] instanceof Propeller)) {
+                        throw new Error("All propulsion units must be instance of Propeller!");
+                    }
+                }
+
+                this.switchDirection = function () {
+                    for (var i = 0, length = propellers.length; i < length; i++) {
+
+                        if (this.propulsionUnits[i].isClockwiseSpin === true) {
+                            this.propulsionUnits[i].isClockwiseSpin = false;
+                        }
+                        else {
+                            this.propulsionUnits[i].isClockwiseSpin = true;
+                        }
+                    }
+                }
+            }
+            WaterCraft.inherit(Vehicle);
+
+            function AmphibiousVehicle(speed, wheels, propellers, isOnWater) {
+                if (isOnWater === true) {
+                    WaterCraft.call(this, speed, propellers);
+                }
+                else {
+                    LandVehicle.call(this, speed, wheels);
+                }
+
+                this.isOnWater = isOnWater;
+                this.switchAreaMode = function () {
+                    if (this.isOnWater === true) {
+                        LandVehicle.call(this, speed, wheels);
+                        this.isOnWater = false;
+                    }
+                    else {
+                        WaterCraft.call(this, speed, propellers);
+                        this.isOnWater = true;
+                    }
+                }
+            }
+            AmphibiousVehicle.inherit(Vehicle);
+
+            return {
+                PropulsionUnit: PropulsionUnit,
+                Wheel: Wheel,
+                PropellingNozzle: PropellingNozzle,
+                Propeller: Propeller,
+                Vehicle: Vehicle,
+                LandVehicle: LandVehicle,
+                AirCraft: AirCraft,
+                WaterCraft: WaterCraft,
+                AmphibiousVehicle: AmphibiousVehicle
+            }
+
+        })();
+
+        var testingVehicleNS = (function () {
+            // testing land vehicle
+            var wheelRadius = 25;
+            var fourWheels = [new vehiclesNS.Wheel(wheelRadius),
+                new vehiclesNS.Wheel(wheelRadius),
+                new vehiclesNS.Wheel(wheelRadius),
+                new vehiclesNS.Wheel(wheelRadius)];
+            var racingCar = new vehiclesNS.LandVehicle(100, fourWheels);
+
+            console.log('Testing land vehicle:');
+            console.log('Wheels:', fourWheels);
+            console.log('Is Wheel instance of PropulsionUnit:',
+                fourWheels[0] instanceof vehiclesNS.PropulsionUnit);
+            console.log('Racing car:', racingCar);
+            console.log('Is LandVehicle instance of Vehicle:',
+                racingCar instanceof vehiclesNS.Vehicle);
+            console.log('Racing car speed:', racingCar.speed);
+            console.log('Acceleration!', racingCar.accelerate());
+            console.log('Racing car speed:', racingCar.speed);
+            console.log('------------------------------------------------');
+            console.log('');
+
+            //// testing aircraft
+            var nozzlePropulsions = [new vehiclesNS.PropellingNozzle(300, false)];
+            var airCraft = new vehiclesNS.AirCraft(500, nozzlePropulsions);
+
+            console.log('Testing aircraft:');
+            console.log('Nozzle:', nozzlePropulsions);
+            console.log('Is PropellingNozzle istance of PropulsionUnit:',
+                nozzlePropulsions[0] instanceof vehiclesNS.PropulsionUnit);
+            console.log('Aircraft:', airCraft);
+            console.log('Is AirCraft istance of Vehicle:',
+                airCraft instanceof vehiclesNS.Vehicle);
+            console.log('Aircraft speed:', airCraft.speed);
+            console.log('Is afterburner on: ', airCraft.propulsionUnits[0].isAfterburnerOn);
+            console.log('Switch afterburner!', airCraft.switchAfterburner());
+            console.log('Is afterburner on: ', airCraft.propulsionUnits[0].isAfterburnerOn);
+            console.log('Acceleration!', airCraft.accelerate());
+            console.log('Aircraft speed:', airCraft.speed);
+            console.log('------------------------------------------------')
+            console.log('');
+
+            // testing watercraft
+            var twoPropellers = [new vehiclesNS.Propeller(6, false),
+                new vehiclesNS.Propeller(6, false)];
+            var powerBoat = new vehiclesNS.WaterCraft(80, twoPropellers);
+
+            console.log('Testing watercraft:');
+            console.log('Propellers:', twoPropellers);
+            console.log('Is Propeller istance of PropulsionUnit:',
+                twoPropellers[0] instanceof vehiclesNS.PropulsionUnit);
+            console.log('Powerboat:', powerBoat);
+            console.log('Is WaterCraft istance of Vehicle:',
+                powerBoat instanceof vehiclesNS.Vehicle);
+            console.log('Powerboat speed:', powerBoat.speed);
+            console.log('Is spining forward (clockwise spin):')
+            for (var i = 0; i < powerBoat.propulsionUnits.length; i++) {
+                console.log(powerBoat.propulsionUnits[i].isClockwiseSpin);
+            }
+            console.log('Switch direction!', powerBoat.switchDirection());
+            console.log('Is spining forward (clockwise spin):')
+            for (var j = 0; j < powerBoat.propulsionUnits.length; j++) {
+                console.log(powerBoat.propulsionUnits[j].isClockwiseSpin);
+            }
+            console.log('Acceleration!', powerBoat.accelerate());
+            console.log('Powerboat speed:', powerBoat.speed);
+            console.log('------------------------------------------------')
+            console.log('');
+
+            // testing amphibious vehicle
+            var amphibious = new vehiclesNS.AmphibiousVehicle(
+                50, fourWheels, twoPropellers, false);
+
+            console.log('Testing amphibious vehicle:');
+            console.log('Is AmphibiousVehicle instance of Vehicle:',
+                amphibious instanceof vehiclesNS.Vehicle);
+            console.log('Is amphibious on water:', amphibious.isOnWater);
+            console.log('Amphibious speed:', amphibious.speed);
+            console.log('Acceleration!', amphibious.accelerate());
+            console.log('Amphibious speed:', amphibious.speed);
+            console.log('Switch area-mode to water!', amphibious.switchAreaMode());
+            console.log('Is amphibious on water:', amphibious.isOnWater);
+            console.log('Amphibious speed:', amphibious.speed);
+            console.log('Is spining forward (clockwise spin):')
+            for (var k = 0; k < amphibious.propulsionUnits.length; k++) {
+                console.log(amphibious.propulsionUnits[k].isClockwiseSpin);
+            }
+            console.log('Switch direction backwards (to slower speed)!',
+                amphibious.switchDirection());
+            console.log('Is spining forward (clockwise spin):')
+            for (var l = 0; l < amphibious.propulsionUnits.length; l++) {
+                console.log(amphibious.propulsionUnits[l].isClockwiseSpin);
+            }
+            console.log('Acceleration!', amphibious.accelerate());
+            console.log('Amphibious speed:', amphibious.speed);
+        })();
+    </script>
+</body>
+</html>
